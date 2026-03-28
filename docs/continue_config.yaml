@@ -1,0 +1,51 @@
+# ==============================================================================
+# openCursor - Continue.dev IDE Configuration Template
+# Optimized for Qwen-27B-Reasoning-Distilled + TurboQuant KV Compression
+# ==============================================================================
+
+name: Local Config (TurboQuant+)
+version: 1.0.0
+schema: v1
+
+models:
+  - name: Qwen3.5 27B Claude Distilled (Turbo)
+    provider: openai
+    model: qwen-27b-distilled
+    apiBase: http://localhost:8080/v1
+    apiKey: "none"
+    roles:
+      - chat
+      - edit
+      - apply
+    # Critical: Use Triple Braces {{{}}} for Handlebars
+    # Force the model to skip the reasoning block (<think>) for edits
+    promptTemplates:
+      edit: |
+        [System Instruction: SKIP the <think> block. Go directly to code output.]
+        You are an expert pair programmer.
+        Language: {{{language}}}
+        File: {{{filename}}}
+        
+        Instruction: {{{userInput}}}
+        
+        Current code:
+        {{{codeToEdit}}}
+        
+        Respond ONLY with the modified code in a block starting with ```{{{language}}}:{{{filename}}}
+      apply: |
+        [System Instruction: SKIP the <think> block.]
+        Directly output the content for the file {{{filename}}} in a code block.
+
+tabAutocompleteModel:
+  name: Qwen3.5 27B Claude Distilled (Turbo)
+  provider: openai
+  model: qwen-27b-distilled
+  apiBase: http://localhost:8080/v1
+  apiKey: "none"
+
+embeddingsProvider:
+  provider: ollama
+  model: nomic-embed-text:latest
+
+# Basic context awareness
+allowExecution: false
